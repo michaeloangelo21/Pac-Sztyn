@@ -1,0 +1,180 @@
+import pygame
+pygame.init()
+#wielkość ekranu gry
+
+win = pygame.display.set_mode((1024,1024))
+width=1024
+height= 1024
+
+#nazwa gry
+
+pygame.display.set_caption("Pac Man")
+
+
+#tło/plansza gry
+
+picture = pygame.image.load('walls_pacman.png')
+picture = pygame.transform.scale(picture, (1024, 1024))
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(image_file)
+        self.image = pygame.transform.scale(self.image,(1024, 1024))
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+BackGround = Background('walls_pacman.png', [0,0])
+
+
+#tworzymy klase bohatera
+
+class bohater(object):
+    def __init__(self, x, y, promien, predkosc):
+        self.x = x
+        self.y = y
+        self.predkosc = predkosc
+        self.promien = promien
+        self.wcisniecie = True
+        self.kierunek = ""
+
+    def RysujBohatera(self,win):
+        pygame.draw.circle(win, (255, 255, 0), (self.x,self.y),self.promien)
+
+    def ruchBohatera(self):
+        if self.kierunek == 0:
+            self.x -= self.predkosc
+        if self.kierunek == 1:
+            self.y -= self.predkosc
+        if self.kierunek == 2:
+            self.x += self.predkosc
+        if self.kierunek ==3:
+            self.y += self.predkosc
+class bohater(object):
+    def __init__(self, x, y, promien, predkosc):
+        self.x = x
+        self.y = y
+        self.predkosc = predkosc
+        self.promien = promien
+        self.wcisniecie = True
+        self.kierunek = ""
+
+    def RysujBohatera(self,win):
+        pygame.draw.circle(win, (255, 255, 0), (self.x,self.y),self.promien)
+
+    def ruchBohatera(self):
+        if self.kierunek == 0:
+            self.x -= self.predkosc
+        if self.kierunek == 1:
+            self.y -= self.predkosc
+        if self.kierunek == 2:
+            self.x += self.predkosc
+        if self.kierunek ==3:
+            self.y += self.predkosc
+class duch():
+#Ten "czerwonyx i czerwonyy" mogą być mylące bo najpierw robiłem po prostu czerwonego duszka i to są po prostu parametry x i y
+#określające jego wymiary, ale na tych nazwach są zbudowane wszystkie 4 duszki
+
+    def __init__(self, parametr1, parametr2,czerwonyx,czerwonyy):
+        self.duszek_ruch1 = (10)
+        self.parametr1 = parametr1
+        self.parametr2 = parametr2
+        self.czerwonyx = czerwonyx
+        self.czerwonyy = czerwonyy
+        self.duszek_ruch2 = (self.parametr1, self.parametr2)
+        self.indx = 0
+
+
+    def poruszanie_sie(self):
+#Instrukcje poruszania się dla duszków. Duszek najpierw porusza się 50 jednostek w dół, potem 50 w prawo itd. aż zrobi pełny kwadrat
+#wtedy licznik się zeruje i duszek leci od nowa. Te 50 to oczywiście tylko przykładowo. Można to zmieniać na dowolne numery i w ten sposób
+#decydować jak duszek będzie się ruszał
+
+        if self.indx == 201:
+            self.indx = 0
+        if self.indx in range(51):
+            self.czerwonyy += 1
+        elif self.indx in range(51,101):
+            self.czerwonyx += 1
+        elif self.indx in range(101,151):
+            self.czerwonyy -= 1
+        elif self.indx in range(151,201):
+            self.czerwonyx -= 1
+        self.indx += 1
+        self.duszek_ruch2 = (self.czerwonyx, self.czerwonyy)
+
+    def rysowanie(self,win, kolor):
+#rysowanie wszystkich 4 duszków.Drugim parametrem jest "(kolor)" który jest określony z zewnętrznej w zmiennych
+#bo jak próbowałem podawać bezpośrednio to wszystkie duszki były w tym samym kolorze
+        
+        pygame.draw.circle(win,(kolor), self.duszek_ruch2, self.duszek_ruch1)
+
+#tworzymy funkcje budującą od nowa klatkę obrazu
+
+def OdswiezenieEkranu():
+    #to jest tu po to żeby tło działało
+    win.fill([255, 255, 255])
+    win.blit(BackGround.image, BackGround.rect)
+    #
+    pacman.ruchBohatera()
+    pacman.RysujBohatera(win)
+    czerwony.poruszanie_sie()
+    czerwony.rysowanie(win, czerwony_kolor)
+    niebieski.poruszanie_sie()
+    niebieski.rysowanie(win, niebieski_kolor)
+    zielony.poruszanie_sie()
+    zielony.rysowanie(win, zielony_kolor)
+    fioletowy.poruszanie_sie()
+    fioletowy.rysowanie(win, fioletowy_kolor)
+    pygame.display.update()
+#ustalamy parametry gry i obiektów
+#Tutaj są poszczególne kolory wrzucone do def rysowanie i aktywacje duszków. Dlaczego parametry w nawiasach są dublowane, np:
+#"(200,600,200,600)"? Nie wiem dlaczego to tak działa, ale działa. Potem poeksperymentuje czy da się zrobić bez tego dubla.
+
+
+czerwony_kolor = (200,0,0)
+niebieski_kolor = (0,0,200)
+zielony_kolor = (0,200,0)
+fioletowy_kolor = (100,0,100)
+niebieski = duch(200,200,200,200)
+czerwony = duch(200,600,200,600)
+zielony = duch(600,600,600,600)
+fioletowy = duch(600,200,600,200)
+pacman = bohater(512,512,24,4)
+TrwanieGry = True
+zegar = pygame.time.Clock()
+
+
+#Główny loop
+
+while TrwanieGry == True:
+
+    #ustalamy ilość klatek
+
+    zegar.tick(60)
+
+    #pętla sprawdzająca czy wyłączyliśmy grę
+
+    for wydarzenie in pygame.event.get():
+        if wydarzenie.type == pygame.QUIT:
+            TrwanieGry = False
+
+    #ustalamy sterowanie bohaterem
+
+        if wydarzenie.type == pygame.KEYDOWN:
+
+            if wydarzenie.key == pygame.K_LEFT and pacman.kierunek != 0 and pacman.kierunek != 2 and wcisniecie:
+                pacman.kierunek = 0
+                wcisniecie = False
+            if wydarzenie.key == pygame.K_RIGHT and pacman.kierunek != 2 and pacman.kierunek != 0 and wcisniecie:
+                pacman.kierunek = 2
+                wcisniecie = False
+            if wydarzenie.key == pygame.K_UP and pacman.kierunek != 1 and pacman.kierunek != 3 and wcisniecie:
+                pacman.kierunek = 1
+                wcisniecie = False
+            if wydarzenie.key == pygame.K_DOWN and pacman.kierunek != 3 and pacman.kierunek != 1 and wcisniecie:
+                pacman.kierunek = 3
+                wcisniecie = False
+
+
+
+    OdswiezenieEkranu()
+    wcisniecie = True
