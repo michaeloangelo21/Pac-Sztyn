@@ -1,3 +1,6 @@
-1. Szymon dodał kod poruszania się pacmana (ekran + poruszanie)
-2. Michał dodał kod tła (Tło)
-3. Szymon zmienił rozdzielczość na 768x768 (768x768)
+1. Kod poruszania się pacmana (ekran + poruszanie)
+2. Kod tła (Tło)
+3. Zmiana rozdzielczości na 768x768 (768x768)
+4. Prototyp duszków
+5. Zmiana rozdzielczości na 750x750
+6. Dodanie punktów, wyniku i restartu
