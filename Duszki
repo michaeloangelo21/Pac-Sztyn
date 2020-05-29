@@ -1,0 +1,95 @@
+#Kod z inpiracji od Szymona. Dodane zostały 4 duszki biegające sobie w swoich domenach na osobnych częściach mapy. Na razie poruszają się tylko po kwadracie
+#Jak już będzie mapa to zaprogramuje by sie poruszały po własnych, indywidualnych trasach
+
+
+
+
+
+import pygame, sys
+pygame.init()
+
+#wielkość ekranu gry
+
+win = pygame.display.set_mode((1024,1024))
+
+
+class duch():
+#Ten "czerwonyx i czerwonyy" mogą być mylące bo najpierw robiłem po prostu czerwonego duszka i to są po prostu parametry x i y
+#określające jego wymiary, ale na tych nazwach są zbudowane wszystkie 4 duszki    
+
+def __init__(self, parametr1, parametr2,czerwonyx,czerwonyy):
+        self.duszek_ruch1 = (10)
+        self.parametr1 = parametr1
+        self.parametr2 = parametr2
+        self.czerwonyx = czerwonyx
+        self.czerwonyy = czerwonyy
+        self.duszek_ruch2 = (self.parametr1, self.parametr2)
+        self.indx = 0
+
+    def poruszanie_sie(self):
+#Instrukcje poruszania się dla duszków. Duszek najpierw porusza się 50 jednostek w dół, potem 50 w prawo itd. aż zrobi pełny kwadrat
+#wtedy licznik się zeruje i duszek leci od nowa. Te 50 to oczywiście tylko przykładowo. Można to zmieniać na dowolne numery i w ten sposób
+#decydować jak duszek będzie się ruszał
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+        if self.indx == 201:
+            self.indx = 0
+        if self.indx in range(51):
+            self.czerwonyy += 1
+        elif self.indx in range(51,101):
+            self.czerwonyx += 1
+        elif self.indx in range(101,151):
+            self.czerwonyy -= 1
+        elif self.indx in range(151,201):
+            self.czerwonyx -= 1
+        self.indx += 1
+        self.duszek_ruch2 = (self.czerwonyx, self.czerwonyy)
+
+
+    def rysowanie(self,win, kolor):
+    #rysowanie wszystkich 4 duszków. drugim parametrem jest "(kolor)" które są określone w zmiennych, bo jak próbowałem podawać bezpośrednio
+    #to wszystkie duszki były w tym samym kolorze
+
+        pygame.draw.circle(win,(kolor), self.duszek_ruch2, self.duszek_ruch1)
+        pygame.draw.circle(win, (kolor), self.duszek_ruch2, self.duszek_ruch1)
+        pygame.draw.circle(win, (kolor), self.duszek_ruch2, self.duszek_ruch1)
+        pygame.draw.circle(win, (kolor), self.duszek_ruch2, self.duszek_ruch1)
+
+
+
+def OdswiezenieEkranu():
+        win.fill((0,0,64))
+        czerwony.poruszanie_sie()
+        czerwony.rysowanie(win, czerwony_kolor)
+        niebieski.poruszanie_sie()
+        niebieski.rysowanie(win, niebieski_kolor)
+        zielony.poruszanie_sie()
+        zielony.rysowanie(win, zielony_kolor)
+        fioletowy.poruszanie_sie()
+        fioletowy.rysowanie(win, fioletowy_kolor)
+        pygame.display.update()
+
+#Tutaj są poszczególne kolory wrzucone do def rysowanie i aktywacje duszków. Dlaczego parametry w nawiasach są dublowane, np:
+#"(200,600,200,600)"? Nie wiem dlaczego to tak działa, ale działa. Potem poeksperymentuje czy da się zrobić bez tego dubla.
+
+czerwony_kolor = (200,0,0)
+niebieski_kolor = (0,0,200)
+zielony_kolor = (0,200,0)
+fioletowy_kolor = (100,0,100)
+niebieski = duch(200,200,200,200)
+czerwony = duch(200,600,200,600)
+zielony = duch(600,600,600,600)
+fioletowy = duch(600,200,600,200)
+TrwanieGry = True
+zegar = pygame.time.Clock()
+
+while TrwanieGry == True:
+
+#ustalamy ilość klatek
+
+    zegar.tick(60)
+
+
+    OdswiezenieEkranu()
