@@ -1,0 +1,133 @@
+import pygame
+pygame.init()
+
+#wielkość ekranu gry
+
+win = pygame.display.set_mode((750,750))
+
+#nazwa gry
+
+pygame.display.set_caption("Pac Man")
+
+#tło/plansza gry
+
+picture = pygame.image.load('walls_pacman.png')
+picture = pygame.transform.scale(picture, (750, 750))
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(image_file)
+        self.image = pygame.transform.scale(self.image,(750, 750))
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+BackGround = Background('walls_pacman.png', [0,0])
+
+#blokada_okna
+
+class Rama(object):
+    def __init__(self,dlugosc,szerokosc,x,y):
+        self.dlugosc = dlugosc
+        self.szerokosc = szerokosc
+        self.x = x
+        self.y = y
+
+    def budowa(self,win):
+
+        pygame.draw.rect(win,(0,0,205), (self.x,self.y,self.dlugosc,self.szerokosc),1)
+
+    def kolizja(self):
+    #lewa
+        if (pacman.x - pacman.promien) <= self.x and (pacman.y > self.y) and (pacman.y < self.y + self.dlugosc) and pacman.kierunek == 0:
+            pacman.predkosc = 0
+        else:
+            pacman.predkosc = 3
+        #prawa
+            if (pacman.x + pacman.promien) >= (self.x + self.dlugosc) and (pacman.y > self.y) and (pacman.y < self.y + self.dlugosc) and pacman.kierunek == 2:
+                pacman.predkosc = 0
+            else:
+                pacman.predkosc = 3
+            #górna
+                if (pacman.y - pacman.promien) <= self.y and (pacman.x > self.x) and (pacman.x < self.x + self.szerokosc) and pacman.kierunek == 1:
+                    pacman.predkosc = 0
+                else:
+                    pacman.predkosc = 3
+                #dolna
+                    if (pacman.y + pacman.promien) >= (self.y + self.szerokosc) and (pacman.x > self.x) and (pacman.x < self.x + self.szerokosc) and pacman.kierunek == 3:
+                        pacman.predkosc = 0
+                    else:
+                        pacman.predkosc = 3
+
+
+#tworzymy klase bohatera
+
+class bohater(object):
+    def __init__(self, x, y, promien, predkosc):
+        self.x = x
+        self.y = y
+        self.predkosc = predkosc
+        self.promien = promien
+        self.wcisniecie = True
+        self.kierunek = ""
+
+    def RysujBohatera(self,win):
+        pygame.draw.circle(win, (255, 255, 0), (self.x,self.y),self.promien)
+
+    def ruchBohatera(self):
+        if self.kierunek == 0:
+            self.x -= self.predkosc
+        if self.kierunek == 1:
+            self.y -= self.predkosc
+        if self.kierunek == 2:
+            self.x += self.predkosc
+        if self.kierunek ==3:
+            self.y += self.predkosc
+#tworzymy funkcje budującą od nowa klatkę obrazu
+
+def OdswiezenieEkranu():
+    win.fill([255, 255, 255])
+    win.blit(BackGround.image, BackGround.rect)
+    sciana.budowa(win)
+    sciana.kolizja()
+    pacman.ruchBohatera()
+    pacman.RysujBohatera(win)
+    pygame.display.update()
+#ustalamy parametry gry i obiektów
+sciana = Rama(700,700,25,25)
+pacman = bohater(384,601,13,3)
+TrwanieGry = True
+zegar = pygame.time.Clock()
+
+#Główny loop
+
+while TrwanieGry == True:
+
+    #ustalamy ilość klatek
+
+    zegar.tick(60)
+
+
+    #pętla sprawdzająca czy wyłączyliśmy grę
+
+    for wydarzenie in pygame.event.get():
+        if wydarzenie.type == pygame.QUIT:
+            TrwanieGry = False
+
+    #ustalamy sterowanie bohaterem
+
+        if wydarzenie.type == pygame.KEYDOWN:
+
+            if wydarzenie.key == pygame.K_LEFT and pacman.kierunek != 0 and pacman.kierunek != 2 and wcisniecie:
+                pacman.kierunek = 0
+                wcisniecie = False
+            elif wydarzenie.key == pygame.K_RIGHT and pacman.kierunek != 2 and pacman.kierunek != 0 and wcisniecie:
+                pacman.kierunek = 2
+                wcisniecie = False
+            elif wydarzenie.key == pygame.K_UP and pacman.kierunek != 1 and pacman.kierunek != 3 and wcisniecie:
+                pacman.kierunek = 1
+                wcisniecie = False
+            elif wydarzenie.key == pygame.K_DOWN and pacman.kierunek != 3 and pacman.kierunek != 1 and wcisniecie:
+                pacman.kierunek = 3
+                wcisniecie = False
+
+    OdswiezenieEkranu()
+    wcisniecie = True
