@@ -52,7 +52,7 @@ class Rama(object):
                 else:
                     pacman.predkosc = 3
                 #dolna
-                    if (pacman.y + pacman.promien) == (self.y + self.szerokosc) and (pacman.x > self.x) and (pacman.x < self.x + self.szerokosc) and pacman.kierunek == 3:
+                    if (pacman.y + pacman.promien) >= (self.y + self.szerokosc) and (pacman.x > self.x) and (pacman.x < self.x + self.szerokosc) and pacman.kierunek == 3:
                         pacman.predkosc = 0
                     else:
                         pacman.predkosc = 3
